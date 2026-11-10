@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPU RoadWatch | Campus Road Damage & Infrastructure Portal - Lovely Professional University</title>
+    
+    <!-- LPU Official Favicon -->
+    <link rel="icon" type="image/png" href="lpu-logo.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Leaflet.js CSS for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-mode">
+    <!-- Emergency Broadcast Banner -->
+    <aside class="emergency-banner" id="emergencyBanner">
+        <div class="banner-content">
+            <span class="badge pulse-badge"><i class="fa-solid fa-triangle-exclamation"></i> LPU Estate Notice</span>
+            <p>Road resurfacing & paver leveling in progress between Block 34 and Boys Hostel BH-3. Campus e-rickshaws advised to use Baldev Raj Mittal Unipolis diversion.</p>
+        </div>
+        <button class="banner-close-btn" id="closeBannerBtn" aria-label="Dismiss banner"><i class="fa-solid fa-xmark"></i></button>
+    </aside>
+
+    <!-- Navigation Header -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="brand-logo">
+                <!-- Official LPU Logo Badge -->
+                <div class="lpu-logo-badge">
+                    <img src="lpu-logo.png" alt="Lovely Professional University (LPU) Logo" class="lpu-logo-img">
+                    <span class="campus-pill">ESTATE</span>
+                </div>
+                <div class="logo-text">
+                    <span class="brand-name">LPU RoadWatch</span>
+                    <span class="brand-tagline">Lovely Professional University • Campus Civil Maintenance</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="nav-links">
+                <a href="#mapSection" class="nav-link active"><i class="fa-solid fa-map-location-dot"></i> Campus Map</a>
+                <a href="#feedSection" class="nav-link"><i class="fa-solid fa-bullhorn"></i> Campus Feed</a>
+                <a href="#trackSection" class="nav-link"><i class="fa-solid fa-magnifying-glass-chart"></i> Track Ticket</a>
+                <a href="#adminSection" class="nav-link admin-nav-link"><i class="fa-solid fa-building-columns"></i> Estate Office Console</a>
+                <a href="#safetySection" class="nav-link"><i class="fa-solid fa-phone-volume"></i> Helplines</a>
+            </nav>
+
+            <!-- Nav Actions -->
+            <div class="nav-actions">
+                <!-- Theme Toggle -->
+                <button class="icon-btn" id="themeToggleBtn" title="Switch Theme (Dark/Light)" aria-label="Toggle theme">
+                    <i class="fa-regular fa-moon" id="themeIcon"></i>
+                </button>
+
+                <!-- Notifications Toggle -->
+                <div class="notification-wrapper">
+                    <button class="icon-btn" id="notifBtn" title="Notifications" aria-label="View notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notif-badge" id="notifBadge">3</span>
+                    </button>
+                    <!-- Notification Dropdown -->
+                    <div class="notification-dropdown" id="notifDropdown">
+                        <div class="dropdown-header">
+                            <h4>LPU Campus Alerts</h4>
+                            <span class="clear-all-btn" id="clearNotifsBtn">Mark read</span>
+                        </div>
+                        <ul class="notif-list" id="notifList">
+                            <!-- Populated dynamically via JS -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Primary CTA Button -->
+                <a href="#reportSection" class="btn btn-primary nav-cta">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>Report Hazard</span>
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button class="mobile-toggle-btn" id="mobileMenuBtn" aria-label="Toggle mobile menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div class="mobile-drawer" id="mobileDrawer">
+            <nav class="mobile-nav-links">
+                <a href="#mapSection" class="mobile-nav-link"><i class="fa-solid fa-map-location-dot"></i> LPU Campus Map</a>
+                <a href="#reportSection" class="mobile-nav-link"><i class="fa-solid fa-plus-circle"></i> File Damage Report</a>
+                <a href="#feedSection" class="mobile-nav-link"><i class="fa-solid fa-bullhorn"></i> Campus Community Feed</a>
+                <a href="#trackSection" class="mobile-nav-link"><i class="fa-solid fa-magnifying-glass-chart"></i> Track Issue Status</a>
+                <a href="#adminSection" class="mobile-nav-link"><i class="fa-solid fa-building-columns"></i> Estate Office Console</a>
+                <a href="#safetySection" class="mobile-nav-link"><i class="fa-solid fa-phone-volume"></i> Emergency Helplines</a>
+            </nav>
+            <div class="mobile-drawer-footer">
+                <a href="#reportSection" class="btn btn-primary btn-block"><i class="fa-solid fa-camera"></i> Quick Report Hazard</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero">
+            <div class="hero-backdrop-glow"></div>
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-pill">
+                        <span class="indicator-dot"></span>
+                        <span>Lovely Professional University • Campus Safety & Civil Works Sentinel</span>
+                    </div>
+                    <div class="lpu-location-banner">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span><strong>LPU Main Campus:</strong> Jalandhar - Delhi G.T. Road, NH-44, Phagwara, Punjab 144411 (31.2536° N, 75.7037° E)</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Report Campus Road Hazards.<br>
+                        <span class="text-gradient">Track Fast LPU Estate Repairs.</span>
+                    </h1>
+                    <p class="hero-description">
+                        Keep Lovely Professional University’s internal roads, hostel quads, walkway paver blocks, and Uni-Mall parking smooth and accident-free. Snap a photo of potholes, broken speed breakers, or flooded storm drains. Our computer vision AI tags severity and auto-routes work orders directly to the LPU Estate & Engineering Department.
+                    </p>
+
+                    <!-- Hero Action Buttons -->
+                    <div class="hero-actions">
+                        <a href="#reportSection" class="btn btn-primary btn-lg">
+                            <i class="fa-solid fa-camera-retro"></i>
+                            <span>Report Campus Hazard</span>
+                        </a>
+                        <a href="#mapSection" class="btn btn-secondary btn-lg">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>Explore Campus Map</span>
+                        </a>
+                    </div>
+
+                    <!-- Quick Track Mini-form in Hero -->
+                    <div class="hero-track-bar">
+                        <i class="fa-solid fa-magnifying-glass track-search-icon"></i>
+                        <input type="text" id="quickTrackInput" placeholder="Enter Ticket ID (e.g., LPU-8421) to check status..." aria-label="Enter report tracking ID">
+                        <button class="btn btn-primary btn-sm" id="quickTrackBtn">
+                            <span>Track</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Trust Stats Bar -->
+                    <div class="hero-stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statResolvedCount">428</div>
+                            <div class="stat-label">Campus Repairs Fixed</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-card">
+                            <div class="stat-number">18 hrs</div>
+                            <div class="stat-label">Avg. Turnaround Time</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-card">
+                            <div class="stat-number">99.2%</div>
+                            <div class="stat-label">Student & Staff Rating</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statActiveCount">8</div>
+                            <div class="stat-label">Active Estate Squads</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Graphic / Interactive Card Preview -->
+                <div class="hero-interactive-card">
+                    <div class="glass-card scanner-preview-card">
+                        <div class="scanner-card-header">
+                            <div class="terminal-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <span class="scanner-live-badge"><i class="fa-solid fa-satellite-dish"></i> LPU AI VISION INSPECTOR</span>
+                        </div>
+                        <div class="scanner-image-container">
+                            <img src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=700&q=80" alt="LPU Road Surface Inspection" class="scanner-img" id="heroScannerImg">
+                            <div class="ai-scan-overlay">
+                                <div class="scanning-laser"></div>
+                                <div class="bounding-box box-1">
+                                    <span class="box-tag">Pothole (Depth ~11.8cm) • 97%</span>
+                                </div>
+                                <div class="bounding-box box-2">
+                                    <span class="box-tag">Displaced Paver Blocks • 91%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scanner-metrics">
+                            <div class="metric-row">
+                                <span class="metric-key"><i class="fa-solid fa-triangle-exclamation"></i> Severity Assessment</span>
+                                <span class="metric-val text-danger font-semibold">Priority 1 (Urgent Repair)</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-key"><i class="fa-solid fa-location-crosshairs"></i> Campus Location</span>
+                                <span class="metric-val">Between Block 34 & Uni-Mall Circle</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-key"><i class="fa-solid fa-truck-fast"></i> Assigned Maintenance Unit</span>
+                                <span class="metric-val text-primary font-semibold">LPU Central Zone Road Paving Unit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Hazard Map Section (LPU Campus) -->
+        <section class="section map-section" id="mapSection">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-badge"><i class="fa-solid fa-satellite"></i> LPU Campus GIS Telemetry</div>
+                    <h2 class="section-title">Live LPU Campus Road Hazard & Repair Map</h2>
+                    <p class="section-subtitle">Real-time status of reported potholes, uneven paver blocks, waterlogging, and ongoing civil road repairs across all LPU campus sectors.</p>
+                </div>
+
+                <!-- Map Control Filters Bar -->
+                <div class="map-controls-card">
+                    <div class="filter-group">
+                        <label for="mapCategoryFilter"><i class="fa-solid fa-filter"></i> Defect Type:</label>
+                        <select id="mapCategoryFilter" class="form-select">
+                            <option value="all">All Categories</option>
+                            <option value="pothole">🕳️ Potholes & Asphalt Cratering</option>
+                            <option value="crack">⚡ Paver Cracks & Fissures</option>
+                            <option value="manhole">⚠️ Broken / Open Drainage Grates</option>
+                            <option value="waterlog">🌊 Monsoon Waterlogging</option>
+                            <option value="collapse">🚧 Speed Breaker / Road Cave-in</option>
+                            <option value="signage">🛑 Broken Bollard / Campus Signage</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="mapSeverityFilter"><i class="fa-solid fa-gauge-high"></i> Urgency:</label>
+                        <select id="mapSeverityFilter" class="form-select">
+                            <option value="all">All Severities</option>
+                            <option value="critical">🔴 Critical Hazard (P1)</option>
+                            <option value="high">🟠 High Risk (P2)</option>
+                            <option value="moderate">🟡 Moderate (P3)</option>
+                            <option value="low">🟢 Minor Maintenance</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="mapStatusFilter"><i class="fa-solid fa-spinner"></i> Repair Status:</label>
+                        <select id="mapStatusFilter" class="form-select">
+                            <option value="all">All Statuses</option>
+                            <option value="Reported">📌 Reported (Pending)</option>
+                            <option value="Verified">🔍 Verified by Estate</option>
+                            <option value="In Progress">🚜 Work In Progress</option>
+                            <option value="Resolved">✅ Repaved & Fixed</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="mapLandmarkJump"><i class="fa-solid fa-map-pin text-primary"></i> Jump to LPU Spot:</label>
+                        <select id="mapLandmarkJump" class="form-select">
+                            <option value="">-- Select LPU Location --</option>
+                            <option value="31.2548,75.7032">🏢 Block 34 (School of CSE / IT)</option>
+                            <option value="31.2555,75.7038">🏢 Block 36 & 38 (Engineering Wings)</option>
+                            <option value="31.2520,75.7018">🏢 Block 13 & 14 (Mittal Business School)</option>
+                            <option value="31.2510,75.7025">🏢 Block 25 to 29 (Pharmacy / Bio-Tech)</option>
+                            <option value="31.2495,75.7040">🏢 Block 55 to 58 (Agriculture & Design)</option>
+                            <option value="31.2538,75.7042">🛍️ Uni-Mall & Uni-Hotel Circle</option>
+                            <option value="31.2530,75.7028">🏛️ Baldev Raj Mittal Unipolis Plaza</option>
+                            <option value="31.2515,75.7015">🎭 Shanti Devi Mittal Auditorium (SDM)</option>
+                            <option value="31.2570,75.7055">🛏️ Boys Hostel Complex (BH-1 to BH-7)</option>
+                            <option value="31.2505,75.7060">🛏️ Girls Hostel Complex (GH-1 to GH-6)</option>
+                            <option value="31.2542,75.7012">🏥 LPU Hospital & Health Centre</option>
+                            <option value="31.2485,75.7050">⚽ LPU Sports Arena & Stadium</option>
+                            <option value="31.2562,75.7005">🚗 Main Gate 1 (NH-44 Entry Loop)</option>
+                            <option value="31.2588,75.7068">🚗 Gate 2 & 4 (Hostel Perimeter Road)</option>
+                            <option value="31.2545,75.7022">🚌 Central E-Rickshaw Stand</option>
+                        </select>
+                    </div>
+
+                    <div class="map-actions-btn-group">
+                        <button class="btn btn-outline btn-sm" id="locateUserMapBtn" title="Find hazards near my current campus spot">
+                            <i class="fa-solid fa-crosshairs"></i>
+                            <span>Near Me</span>
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="resetMapZoomBtn" title="Reset View to LPU Center">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>LPU Center</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Map Container Box -->
+                <div class="map-wrapper">
+                    <div id="cityMap" class="leaflet-map-container" role="region" aria-label="Interactive LPU Campus Road Map"></div>
+                    
+                    <!-- Map Float Legend Overlay -->
+                    <div class="map-legend-overlay">
+                        <div class="legend-header"><strong>LPU Campus Legend</strong></div>
+                        <div class="legend-items">
+                            <div class="legend-item"><span class="legend-dot dot-critical"></span> Critical / Immediate P1</div>
+                            <div class="legend-item"><span class="legend-dot dot-high"></span> High Risk Hazard</div>
+                            <div class="legend-item"><span class="legend-dot dot-moderate"></span> Moderate Defect</div>
+                            <div class="legend-item"><span class="legend-dot dot-progress"></span> Estate Crew Active</div>
+                            <div class="legend-item"><span class="legend-dot dot-resolved"></span> Repaved & Inspected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Citizen / Student Damage Reporting Wizard Section -->
+        <section class="section report-section" id="reportSection">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-badge"><i class="fa-solid fa-camera"></i> Student & Staff Intake</div>
+                    <h2 class="section-title">File an LPU Campus Road Hazard Report</h2>
+                    <p class="section-subtitle">Take 45 seconds to submit internal road defects. The LPU Estate Office automatically assigns work orders to the nearest civil maintenance crew.</p>
+                </div>
+
+                <div class="report-card-container">
+                    <!-- Progress Stepper Header -->
+                    <div class="stepper-header">
+                        <div class="step-indicator active" data-step="1">
+                            <div class="step-circle"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="step-label">1. Campus Location</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="step-indicator" data-step="2">
+                            <div class="step-circle"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="step-label">2. Damage Details</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="step-indicator" data-step="3">
+                            <div class="step-circle"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <div class="step-label">3. Photo & AI Scan</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="step-indicator" data-step="4">
+                            <div class="step-circle"><i class="fa-solid fa-paper-plane"></i></div>
+                            <div class="step-label">4. Submit to Estate</div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Step Form Wrapper -->
+                    <form id="damageReportForm" class="report-form" novalidate>
+                        
+                        <!-- STEP 1: Campus Location -->
+                        <div class="form-step-content active" id="step1">
+                            <h3 class="step-heading">Where on the LPU Campus is the road defect?</h3>
+                            <p class="step-subheading">Select your campus sector, enter the nearest academic block or hostel, or drop a pin on the LPU map.</p>
+
+                            <div class="gps-quick-bar">
+                                <button type="button" class="btn btn-outline" id="autoDetectGpsBtn">
+                                    <i class="fa-solid fa-location-crosshairs"></i>
+                                    <span>Detect My Current Campus GPS Spot</span>
+                                </button>
+                                <span class="gps-status-text" id="gpsStatusText">Coordinates defaulted to LPU Campus Center (31.2536° N, 75.7037° E)</span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="quickLpuSpotSelect" class="label-with-tip">
+                                    <span><i class="fa-solid fa-building-flag text-primary"></i> Quick-Select Predefined LPU Campus Location:</span>
+                                    <small class="tip-badge">Auto-fills address, sector & coordinates</small>
+                                </label>
+                                <select id="quickLpuSpotSelect" class="form-select">
+                                    <option value="">-- Choose Known LPU Spot to Auto-Fill Form --</option>
+                                    <option value="block34">🏢 Block 34 (School of CSE) - Uni-Mall Curve</option>
+                                    <option value="block36">🏢 Block 36 & 38 (Engineering Wings)</option>
+                                    <option value="block13">🏢 Block 13 & 14 (Mittal School of Business)</option>
+                                    <option value="block26">🏢 Block 25 to 29 (Pharmacy / Bio-Tech / Sciences)</option>
+                                    <option value="block56">🏢 Block 55 to 58 (Agriculture & Design)</option>
+                                    <option value="unimall">🛍️ Uni-Mall & Uni-Hotel Roundabout</option>
+                                    <option value="unipolis">🏛️ Baldev Raj Mittal Unipolis & Central Lawns</option>
+                                    <option value="auditorium">🎭 Shanti Devi Mittal Auditorium Access Road</option>
+                                    <option value="bh4">🛏️ Boys Hostel 4 (BH-4) Front Quad Road</option>
+                                    <option value="bh1">🛏️ Boys Hostel 1, 2 & 3 North Entry Road</option>
+                                    <option value="gh2">🛏️ Girls Hostel 2 & 4 (GH-2/GH-4) Walkway</option>
+                                    <option value="hospital">🏥 LPU Hospital & Health Centre Crossway</option>
+                                    <option value="sports">⚽ LPU Sports Stadium & Olympic Pool</option>
+                                    <option value="gate1">🚗 Main Gate 1 (NH-44 Entry Loop)</option>
+                                    <option value="gate4">🚗 Gate 4 / Back Perimeter Road</option>
+                                    <option value="erickshaw">🚌 Central E-Rickshaw Stand & Transit Hub</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row two-col">
+                                <div class="form-group">
+                                    <label for="reportStreetAddress">Road / Internal Avenue Name *</label>
+                                    <input type="text" id="reportStreetAddress" class="form-control" placeholder="e.g. Avenue between Block 34 and Uni-Mall Circle" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reportLandmark">Nearest Block / Hostel / Facility</label>
+                                    <input type="text" id="reportLandmark" class="form-control" placeholder="e.g. Opposite Shanti Devi Mittal Auditorium or BH-4 Mess">
+                                </div>
+                            </div>
+
+                            <div class="form-row three-col">
+                                <div class="form-group">
+                                    <label for="reportWard">LPU Campus Sector *</label>
+                                    <select id="reportWard" class="form-select" required>
+                                        <option value="">Select Campus Sector</option>
+                                        <option value="Sector 1 - Academic Corridor (Blocks 32-38, 13, 25-29)">Sector 1 - Academic Corridor (Blocks 32-38, 13, 25-29)</option>
+                                        <option value="Sector 2 - Central Hub (Uni-Mall, Unipolis & Lawns)">Sector 2 - Central Hub (Uni-Mall, Unipolis & Lawns)</option>
+                                        <option value="Sector 3 - Boys Hostel Complex (BH-1 to BH-7)">Sector 3 - Boys Hostel Complex (BH-1 to BH-7)</option>
+                                        <option value="Sector 4 - Girls Hostel Complex (GH-1 to GH-6)">Sector 4 - Girls Hostel Complex (GH-1 to GH-6)</option>
+                                        <option value="Sector 5 - Sports Arena & Olympic Complex">Sector 5 - Sports Arena & Olympic Complex</option>
+                                        <option value="Sector 6 - Main Gate 1, Gate 2 & Campus Ring Road">Sector 6 - Main Gate 1, Gate 2 & Campus Ring Road</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reportLat">Latitude (LPU)</label>
+                                    <input type="number" step="0.000001" id="reportLat" class="form-control font-mono" placeholder="31.253600" value="31.253600">
+                                </div>
+                                <div class="form-group">
+                                    <label for="reportLng">Longitude (LPU)</label>
+                                    <input type="number" step="0.000001" id="reportLng" class="form-control font-mono" placeholder="75.703700" value="75.703700">
+                                </div>
+                            </div>
+
+                            <!-- Mini Pinpoint Helper Map -->
+                            <div class="form-group">
+                                <label class="label-with-tip">
+                                    <span>Drag Pin or Click to Pinpoint Inside LPU Campus</span>
+                                    <small class="tip-badge">Click anywhere inside campus boundary</small>
+                                </label>
+                                <div id="pickerMap" class="picker-map-box"></div>
+                            </div>
+
+                            <div class="step-footer">
+                                <div></div>
+                                <button type="button" class="btn btn-primary" id="toStep2Btn">
+                                    <span>Next: Defect Details</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Defect Type & Severity -->
+                        <div class="form-step-content" id="step2">
+                            <h3 class="step-heading">Select Hazard Type & Estimated Severity</h3>
+                            <p class="step-subheading">Choose the category that best represents the campus road issue to dispatch the right LPU maintenance squad.</p>
+
+                            <!-- Damage Category Grid -->
+                            <label class="form-label-section">Defect Category *</label>
+                            <div class="category-grid" id="categoryPickerGrid">
+                                <label class="category-card active">
+                                    <input type="radio" name="damageCategory" value="pothole" checked>
+                                    <div class="category-icon-box"><i class="fa-solid fa-circle-dot"></i></div>
+                                    <div class="category-title">Pothole / Asphalt Cavity</div>
+                                    <div class="category-desc">Broken tar or deep cavity on main road</div>
+                                </label>
+
+                                <label class="category-card">
+                                    <input type="radio" name="damageCategory" value="crack">
+                                    <div class="category-icon-box"><i class="fa-solid fa-bolt"></i></div>
+                                    <div class="category-title">Broken Paver Blocks</div>
+                                    <div class="category-desc">Uneven walkway, trip hazard for students</div>
+                                </label>
+
+                                <label class="category-card">
+                                    <input type="radio" name="damageCategory" value="manhole">
+                                    <div class="category-icon-box"><i class="fa-solid fa-circle-radiation"></i></div>
+                                    <div class="category-title">Drainage Grate Defect</div>
+                                    <div class="category-desc">Missing, bent, or sunken drain cover</div>
+                                </label>
+
+                                <label class="category-card">
+                                    <input type="radio" name="damageCategory" value="waterlog">
+                                    <div class="category-icon-box"><i class="fa-solid fa-water"></i></div>
+                                    <div class="category-title">Rain Waterlogging</div>
+                                    <div class="category-desc">Stagnant ponding blocking walkways</div>
+                                </label>
+
+                                <label class="category-card">
+                                    <input type="radio" name="damageCategory" value="collapse">
+                                    <div class="category-icon-box"><i class="fa-solid fa-mountain-sun"></i></div>
+                                    <div class="category-title">Speed Breaker Hazard</div>
+                                    <div class="category-desc">Damaged bump, unpainted or scraped</div>
+                                </label>
+
+                                <label class="category-card">
+                                    <input type="radio" name="damageCategory" value="signage">
+                                    <div class="category-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                    <div class="category-title">Bollard & Traffic Sign</div>
+                                    <div class="category-desc">Broken safety barrier, fallen signage</div>
+                                </label>
+                            </div>
+
+                            <!-- Severity Selection Radio Cards -->
+                            <label class="form-label-section mt-4">Estimated Risk Level *</label>
+                            <div class="severity-picker-grid">
+                                <label class="severity-card low">
+                                    <input type="radio" name="damageSeverity" value="low">
+                                    <div class="severity-badge-indicator"></div>
+                                    <div class="severity-content">
+                                        <div class="sev-title">Minor (Low)</div>
+                                        <div class="sev-desc">Small surface hairline crack. Safe for e-rickshaws and pedestrians.</div>
+                                    </div>
+                                </label>
+
+                                <label class="severity-card moderate">
+                                    <input type="radio" name="damageSeverity" value="moderate" checked>
+                                    <div class="severity-badge-indicator"></div>
+                                    <div class="severity-content">
+                                        <div class="sev-title">Moderate Hazard</div>
+                                        <div class="sev-desc">Pedestrians must swerve; risk of cycle or scooter skidding.</div>
+                                    </div>
+                                </label>
+
+                                <label class="severity-card high">
+                                    <input type="radio" name="damageSeverity" value="high">
+                                    <div class="severity-badge-indicator"></div>
+                                    <div class="severity-content">
+                                        <div class="sev-title">High Risk</div>
+                                        <div class="sev-desc">Frequent trip hazard; dangerous during evening class rush hours.</div>
+                                    </div>
+                                </label>
+
+                                <label class="severity-card critical">
+                                    <input type="radio" name="damageSeverity" value="critical">
+                                    <div class="severity-badge-indicator"></div>
+                                    <div class="severity-content">
+                                        <div class="sev-title">Critical / Emergency P1</div>
+                                        <div class="sev-desc">Open drain hole, deep crater, or road cave-in requiring urgent cordon.</div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Incident Description -->
+                            <div class="form-group mt-4">
+                                <label for="reportDescription">Additional Context & Notes</label>
+                                <textarea id="reportDescription" rows="3" class="form-control" placeholder="Describe depth, affected lane, proximity to hostel entry, e-rickshaw route impact..."></textarea>
+                            </div>
+
+                            <!-- Quick Tag Suggestions -->
+                            <div class="quick-tags-wrapper">
+                                <span class="tag-title">Quick tags:</span>
+                                <button type="button" class="quick-tag-btn" data-tag="Near Uni-Mall Entry">+ Near Uni-Mall</button>
+                                <button type="button" class="quick-tag-btn" data-tag="Near BH-4 Mess">+ Near BH Mess</button>
+                                <button type="button" class="quick-tag-btn" data-tag="E-rickshaw route">+ E-rickshaw route</button>
+                                <button type="button" class="quick-tag-btn" data-tag="Loose interlocking pavers">+ Loose pavers</button>
+                                <button type="button" class="quick-tag-btn" data-tag="Water ponding">+ Water ponding</button>
+                            </div>
+
+                            <div class="step-footer">
+                                <button type="button" class="btn btn-outline" id="backToStep1Btn">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    <span>Back</span>
+                                </button>
+                                <button type="button" class="btn btn-primary" id="toStep3Btn">
+                                    <span>Next: Photo & AI Assessment</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Photo Upload & AI Scan -->
+                        <div class="form-step-content" id="step3">
+                            <h3 class="step-heading">Evidence Photo & LPU AI Vision Scan</h3>
+                            <p class="step-subheading">Upload a clear photo of the campus road defect. Our computer vision model tags depth perimeter and suggests the priority level.</p>
+
+                            <div class="photo-upload-layout">
+                                <!-- Upload Drag & Drop Zone -->
+                                <div class="upload-dropzone" id="uploadDropzone">
+                                    <input type="file" id="reportPhotoInput" accept="image/*" class="file-input-hidden">
+                                    <div class="dropzone-content" id="dropzoneEmpty">
+                                        <div class="upload-icon-circle"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                                        <h4>Drop campus road photo here, or <span class="browse-link">browse files</span></h4>
+                                        <p class="upload-hint">Supports JPG, PNG, WEBP. Mobile camera capture supported.</p>
+                                        
+                                        <!-- Sample Preset Photos for Instant Testing -->
+                                        <div class="sample-photos-row">
+                                            <span class="sample-label">Or test with demo photo:</span>
+                                            <button type="button" class="btn-sample-photo" data-img="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80" data-type="pothole" data-sev="critical">🕳️ Campus Pothole</button>
+                                            <button type="button" class="btn-sample-photo" data-img="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" data-type="crack" data-sev="high">⚡ Paver Crack</button>
+                                            <button type="button" class="btn-sample-photo" data-img="https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80" data-type="waterlog" data-sev="high">🌊 Flooded Walkway</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Uploaded Image Preview & Scanning Effect -->
+                                    <div class="dropzone-preview hidden" id="dropzonePreview">
+                                        <div class="preview-img-wrapper">
+                                            <img src="" alt="Hazard Preview" id="previewImgElement">
+                                            
+                                            <!-- AI Scanner Animation Elements -->
+                                            <div class="ai-live-scanner" id="aiLiveScanner">
+                                                <div class="scan-grid-lines"></div>
+                                                <div class="scan-beam"></div>
+                                                <div class="scan-target-box" id="scanTargetBox">
+                                                    <span class="scan-confidence-badge" id="scanConfidenceBadge">Analyzing...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn-remove-photo" id="removePhotoBtn" title="Remove photo">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- AI Analysis Output Panel -->
+                                <div class="ai-results-panel" id="aiResultsPanel">
+                                    <div class="ai-panel-header">
+                                        <div class="ai-badge"><i class="fa-solid fa-brain"></i> LPU RoadWatch Vision Model</div>
+                                        <span class="ai-engine-status" id="aiEngineStatus"><i class="fa-solid fa-circle-check"></i> Ready to scan</span>
+                                    </div>
+
+                                    <div class="ai-metrics-container" id="aiMetricsContainer">
+                                        <div class="ai-metric-box">
+                                            <div class="metric-title">Detected Defect</div>
+                                            <div class="metric-value" id="aiDetectedType">—</div>
+                                        </div>
+                                        <div class="ai-metric-box">
+                                            <div class="metric-title">Model Confidence</div>
+                                            <div class="metric-value text-accent" id="aiConfidenceVal">—</div>
+                                        </div>
+                                        <div class="ai-metric-box">
+                                            <div class="metric-title">Recommended Urgency</div>
+                                            <div class="metric-value" id="aiSuggestedSeverity">—</div>
+                                        </div>
+                                        <div class="ai-metric-box">
+                                            <div class="metric-title">Assigned LPU Squad</div>
+                                            <div class="metric-value" id="aiSuggestedUnit">—</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="ai-alert-box info" id="aiInsightBox">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span id="aiInsightText">Upload or choose a photo to trigger instant AI damage boundary extraction and priority classification.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-footer">
+                                <button type="button" class="btn btn-outline" id="backToStep2Btn">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    <span>Back</span>
+                                </button>
+                                <button type="button" class="btn btn-primary" id="toStep4Btn">
+                                    <span>Next: Review & Submit</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: Citizen Contact & Final Submission -->
+                        <div class="form-step-content" id="step4">
+                            <h3 class="step-heading">Student / Staff Information & Final Review</h3>
+                            <p class="step-subheading">Provide your LPU credentials for SMS/email resolution updates or file 100% anonymously.</p>
+
+                            <!-- Summary Review Banner -->
+                            <div class="review-summary-card" id="reviewSummaryCard">
+                                <div class="review-col">
+                                    <div class="review-label">Campus Location:</div>
+                                    <div class="review-val font-semibold" id="revLocation">Between Block 34 & Uni-Mall</div>
+                                </div>
+                                <div class="review-col">
+                                    <div class="review-label">Campus Sector:</div>
+                                    <div class="review-val" id="revWard">Sector 1 - Academic Corridor</div>
+                                </div>
+                                <div class="review-col">
+                                    <div class="review-label">Defect Category:</div>
+                                    <div class="review-val text-primary font-semibold" id="revCategory">Pothole</div>
+                                </div>
+                                <div class="review-col">
+                                    <div class="review-label">Severity Level:</div>
+                                    <div class="review-val" id="revSeverity"><span class="badge badge-critical">Critical P1</span></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group checkbox-group-box">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="anonymousCheckbox">
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-label">
+                                        <strong>Submit Anonymously</strong>
+                                        <small>Your name and student/employee ID will not be recorded or visible to anyone.</small>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="reporter-inputs-group" id="reporterInputsGroup">
+                                <div class="form-row three-col">
+                                    <div class="form-group">
+                                        <label for="reporterName">Full Name *</label>
+                                        <input type="text" id="reporterName" class="form-control" placeholder="e.g. Sabarish K." value="Sabarish K.">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reporterPhone">Registration / Employee No.</label>
+                                        <input type="text" id="reporterPhone" class="form-control font-mono" placeholder="e.g. 12108942 / LPU2041" value="Reg. 12108942">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reporterEmail">LPU Email Address</label>
+                                        <input type="email" id="reporterEmail" class="form-control" placeholder="sabarish.12108942@lpu.in" value="sabarish.student@lpu.in">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group checkbox-group-box mt-3">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="consentCheckbox" checked>
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-label">
+                                        <span>I verify that the uploaded photo and campus location accurately reflect road conditions at Lovely Professional University.</span>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="step-footer">
+                                <button type="button" class="btn btn-outline" id="backToStep3Btn">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    <span>Back</span>
+                                </button>
+                                <button type="submit" class="btn btn-success btn-lg" id="submitReportBtn">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>Submit to LPU Estate Office</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Track Issue Status Section -->
+        <section class="section track-section" id="trackSection">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-badge"><i class="fa-solid fa-timeline"></i> LPU Repair Pipeline</div>
+                    <h2 class="section-title">Track Campus Repair Progress</h2>
+                    <p class="section-subtitle">Follow your incident from initial report filing to LPU Estate verification, contractor crew dispatch, and final asphalt repaving.</p>
+                </div>
+
+                <!-- Tracker Search Box -->
+                <div class="track-search-card">
+                    <form id="trackStatusForm" class="track-form">
+                        <div class="track-input-wrapper">
+                            <i class="fa-solid fa-hashtag search-prefix-icon"></i>
+                            <input type="text" id="trackIdInput" class="track-input" placeholder="Enter LPU Ticket ID (e.g., LPU-8421)" value="LPU-8421" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="lookupTicketBtn">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Check Status</span>
+                        </button>
+                    </form>
+                    
+                    <div class="track-examples">
+                        <span>Try Sample LPU Tickets:</span>
+                        <button type="button" class="chip-sample-ticket" data-id="LPU-8421">LPU-8421 (Block 34 • In Progress)</button>
+                        <button type="button" class="chip-sample-ticket" data-id="LPU-7193">LPU-7193 (BH-4 Mess • Resolved)</button>
+                        <button type="button" class="chip-sample-ticket" data-id="LPU-9504">LPU-9504 (Unipolis • Critical P1)</button>
+                        <button type="button" class="chip-sample-ticket" data-id="LPU-6210">LPU-6210 (Auditorium Rd • Pending)</button>
+                    </div>
+                </div>
+
+                <!-- Tracker Result Container -->
+                <div class="tracker-result-card" id="trackerResultCard">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Public Citizen Community Feed -->
+        <section class="section feed-section" id="feedSection">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-badge"><i class="fa-solid fa-users"></i> LPU Student & Staff Sentinel</div>
+                    <h2 class="section-title">Public Campus Hazard Feed</h2>
+                    <p class="section-subtitle">View issues reported by students and faculty across LPU. Upvote ("Me Too") to elevate repair priority with the Estate Office.</p>
+                </div>
+
+                <!-- Feed Filter & Search Controls -->
+                <div class="feed-controls-bar">
+                    <div class="feed-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="feedSearchInput" placeholder="Search by Block, Hostel (BH/GH), Uni-Mall, or road name...">
+                    </div>
+
+                    <div class="feed-filter-pills" id="feedFilterPills">
+                        <button class="feed-pill active" data-status="all">All Issues (<span id="countAllFeed">0</span>)</button>
+                        <button class="feed-pill" data-status="Reported">📌 Pending (<span id="countPendingFeed">0</span>)</button>
+                        <button class="feed-pill" data-status="In Progress">🚜 Work Active (<span id="countProgressFeed">0</span>)</button>
+                        <button class="feed-pill" data-status="Resolved">✅ Repaved (<span id="countResolvedFeed">0</span>)</button>
+                    </div>
+
+                    <div class="feed-sort-wrapper">
+                        <label for="feedSortSelect"><i class="fa-solid fa-arrow-down-wide-short"></i> Sort:</label>
+                        <select id="feedSortSelect" class="form-select-sm">
+                            <option value="newest">Newest First</option>
+                            <option value="upvotes">Most Upvoted ("Me Too")</option>
+                            <option value="severity">Highest Severity</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Feed Cards Grid -->
+                <div class="feed-cards-grid" id="feedCardsGrid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Municipal Authority Admin Section -->
+        <section class="section admin-section" id="adminSection">
+            <div class="section-container">
+                <div class="admin-top-bar">
+                    <div>
+                        <div class="section-badge admin-badge"><i class="fa-solid fa-building-columns"></i> LPU Estate Office & Campus Engineering Wing</div>
+                        <h2 class="section-title">LPU Estate Management & Dispatch Operations</h2>
+                        <p class="section-subtitle">Real-time telemetry, automated work order routing, civil contractor assignments, and repair performance analytics across Lovely Professional University.</p>
+                    </div>
+                    <div class="admin-quick-actions">
+                        <button class="btn btn-outline" id="exportCsvBtn">
+                            <i class="fa-solid fa-file-csv"></i>
+                            <span>Export CSV Work Orders</span>
+                        </button>
+                        <button class="btn btn-primary" id="openDispatchModalBtn">
+                            <i class="fa-solid fa-truck-pickup"></i>
+                            <span>Dispatch Estate Squad</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin KPI Cards -->
+                <div class="admin-kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon-box bg-blue"><i class="fa-solid fa-clipboard-list"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Total Campus Reports</span>
+                            <h3 class="kpi-value" id="kpiTotalReports">0</h3>
+                            <span class="kpi-trend text-success"><i class="fa-solid fa-arrow-up"></i> Active semester queue</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-box bg-red"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Critical P1 Hazards</span>
+                            <h3 class="kpi-value text-danger" id="kpiCriticalHazards">0</h3>
+                            <span class="kpi-subtext">Requires < 12h resolution</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-box bg-yellow"><i class="fa-solid fa-person-digging"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Active Estate Squads</span>
+                            <h3 class="kpi-value text-warning" id="kpiInProgress">0</h3>
+                            <span class="kpi-subtext">In-field civil repairs</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-box bg-green"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="kpi-content">
+                            <span class="kpi-label">Repaved & Inspected</span>
+                            <h3 class="kpi-value text-success" id="kpiResolvedTotal">0</h3>
+                            <span class="kpi-trend text-success"><i class="fa-solid fa-shield-check"></i> 98.6% SLA adherence</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Analytics Charts Row -->
+                <div class="admin-charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4><i class="fa-solid fa-chart-pie"></i> Defect Distribution by Category</h4>
+                            <span class="chart-subtitle">LPU Campus Aggregate</span>
+                        </div>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4><i class="fa-solid fa-chart-column"></i> Resolution Status by Campus Sector</h4>
+                            <span class="chart-subtitle">Active vs Closed Wards</span>
+                        </div>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Incident Management Table -->
+                <div class="admin-table-card">
+                    <div class="table-header-bar">
+                        <h3><i class="fa-solid fa-table-list"></i> Estate Dispatch & Status Management</h3>
+                        <div class="table-search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="adminTableSearch" placeholder="Filter by Ticket, Sector, Squad...">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="admin-table" id="adminReportsTable">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Photo</th>
+                                    <th>Defect & Urgency</th>
+                                    <th>Campus Sector & Location</th>
+                                    <th>Reported</th>
+                                    <th>Assigned Squad</th>
+                                    <th>Update Status</th>
+                                    <th>Inspect</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTableBody">
+                                <!-- Populated dynamically via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Safety Hub & Municipal Guidelines -->
+        <section class="section safety-section" id="safetySection">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-badge"><i class="fa-solid fa-shield-heart"></i> LPU Student & Staff Safety</div>
+                    <h2 class="section-title">Campus Safety & Emergency Helplines</h2>
+                    <p class="section-subtitle">24/7 dedicated contacts for immediate assistance with open sewer grates, road cave-ins, or road transit emergencies inside LPU.</p>
+                </div>
+
+                <div class="safety-grid">
+                    <!-- Emergency Helpline Card -->
+                    <div class="safety-hotline-card">
+                        <div class="hotline-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                        <h3>24/7 LPU Campus Helplines</h3>
+                        <p>For urgent road cave-ins, e-rickshaw collisions, or hazardous open manholes, contact the security control room immediately:</p>
+                        <div class="hotline-numbers">
+                            <a href="tel:01824517000" class="hotline-item">
+                                <span class="hotline-title"><i class="fa-solid fa-shield-halved"></i> LPU Security Control Room:</span>
+                                <span class="hotline-tel font-mono">01824-517000 / Ext. 1000</span>
+                            </a>
+                            <a href="tel:01824517100" class="hotline-item">
+                                <span class="hotline-title"><i class="fa-solid fa-truck-medical"></i> LPU Hospital & 24x7 Ambulance:</span>
+                                <span class="hotline-tel font-mono">01824-517100 / Ext. 100</span>
+                            </a>
+                            <a href="tel:01824517200" class="hotline-item">
+                                <span class="hotline-title"><i class="fa-solid fa-hammer"></i> LPU Estate Helpdesk (OMS):</span>
+                                <span class="hotline-tel font-mono">01824-517200</span>
+                            </a>
+                            <a href="tel:18001024431" class="hotline-item">
+                                <span class="hotline-title"><i class="fa-solid fa-headset"></i> Student Proctorial Cell:</span>
+                                <span class="hotline-tel font-mono">1800-102-4431</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Safety Best Practices Accordion -->
+                    <div class="safety-faq-card">
+                        <h3>Campus Road Reporting FAQ</h3>
+                        <div class="faq-accordion">
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>How does the LPU Estate Office prioritize road repairs?</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Critical P1 hazards on high-traffic e-rickshaw routes (e.g., Uni-Mall, Block 34, Central Lawns, Gate 1) are cordoned off within 2 hours and repaired with cold-mix asphalt within 18 hours. Minor walkway paver cracks are repaired during scheduled weekly sweeps.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>Can I report damaged roads outside my hostel?</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Yes! All campus areas including Boys Hostels (BH-1 to BH-7), Girls Hostels (GH-1 to GH-6), staff quarters, and sports stadiums are covered. Choose Sector 3 or 4 in Step 1 of the report form.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>Can students report road hazards anonymously?</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Yes. Select the "Submit Anonymously" option in Step 4. Your name and registration number will not be recorded or visible to anyone. You will still receive an official LPU Tracking ID to follow progress.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>What does the "Me Too" (Confirm) upvote do?</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>When multiple students or staff upvote the same hazard, our automated dispatch algorithm boosts the ticket's priority score in the Estate Maintenance supervisor's queue.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <img src="lpu-logo.png" alt="Lovely Professional University (LPU) Logo" class="lpu-logo-img-footer">
+                    <div>
+                        <span class="brand-name" style="font-size:1.15rem;">Lovely Professional University</span>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">Campus Estate & Civil Infrastructure Wing</div>
+                    </div>
+                </div>
+                <p>Dedicated road safety and infrastructure sentinel for Lovely Professional University, Jalandhar - Delhi G.T. Road, Phagwara, Punjab 144411.</p>
+            </div>
+            <div class="footer-links-group">
+                <h4>Campus Navigation</h4>
+                <a href="#mapSection">Live Campus Map</a>
+                <a href="#reportSection">Report Road Defect</a>
+                <a href="#trackSection">Track LPU Ticket</a>
+                <a href="#feedSection">Campus Feed</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Estate Operations</h4>
+                <a href="#adminSection">Estate Office Console</a>
+                <a href="#adminSection">Squad Dispatch</a>
+                <a href="#safetySection">Emergency Numbers</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Campus Portals</h4>
+                <a href="https://ums.lpu.in" target="_blank" rel="noopener">LPU UMS Portal</a>
+                <a href="https://www.lpu.in" target="_blank" rel="noopener">LPU Official Website</a>
+                <span>Campus GIS Telemetry</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Lovely Professional University (LPU). Campus Road Safety & Infrastructure Initiative.</p>
+            <div class="footer-socials">
+                <a href="#" aria-label="LPU Portal"><i class="fa-solid fa-graduation-cap"></i></a>
+                <a href="#" aria-label="Campus Safety"><i class="fa-solid fa-shield-halved"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: Submission Success Modal -->
+    <div class="modal-backdrop hidden" id="successModal">
+        <div class="modal-box">
+            <div class="modal-header-icon success-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3>Report Filed to LPU Estate Office!</h3>
+            <p>Your campus road hazard ticket has been registered in the LPU Estate Maintenance queue.</p>
+            
+            <div class="ticket-badge-box">
+                <span class="ticket-title">Official LPU Ticket ID</span>
+                <div class="ticket-id-display">
+                    <span id="createdTicketId">LPU-2026-999</span>
+                    <button type="button" class="btn-copy-ticket" id="copyTicketBtn" title="Copy Ticket ID">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <p class="modal-note"><i class="fa-solid fa-bell"></i> Save this Ticket ID to track repair milestones or check the public campus feed.</p>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="closeSuccessModalBtn">Done</button>
+                <button type="button" class="btn btn-primary" id="trackCreatedTicketBtn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Track This Ticket</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Incident Details Deep-Dive Modal -->
+    <div class="modal-backdrop hidden" id="detailsModal">
+        <div class="modal-box modal-lg">
+            <div class="modal-top">
+                <div class="modal-title-wrap">
+                    <span class="ticket-pill" id="detailTicketId">LPU-8421</span>
+                    <h3 id="detailTitle">Deep Crater near Block 34</h3>
+                </div>
+                <button type="button" class="modal-close-icon" id="closeDetailsModalBtn" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body-details" id="detailModalBody">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Dispatch Field Crew Modal -->
+    <div class="modal-backdrop hidden" id="dispatchModal">
+        <div class="modal-box">
+            <div class="modal-top">
+                <h3><i class="fa-solid fa-truck-pickup text-primary"></i> Dispatch LPU Estate Squad</h3>
+                <button type="button" class="modal-close-icon" id="closeDispatchModalBtn" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="dispatchCrewForm">
+                <div class="form-group">
+                    <label for="dispatchSelectTicket">Select Campus Defect Ticket *</label>
+                    <select id="dispatchSelectTicket" class="form-select" required>
+                        <!-- Populated dynamically via JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dispatchSelectCrew">Assign LPU Maintenance Squad *</label>
+                    <select id="dispatchSelectCrew" class="form-select" required>
+                        <option value="LPU Central Zone Road Paving Unit">LPU Central Zone Road Paving Unit</option>
+                        <option value="Hostel Complex Civil Maintenance Squad (BH/GH)">Hostel Complex Civil Maintenance Squad (BH/GH)</option>
+                        <option value="Uni-Mall & Unipolis Infrastructure Team">Uni-Mall & Unipolis Infrastructure Team</option>
+                        <option value="LPU Drainage & Stormwater Response Unit">LPU Drainage & Stormwater Response Unit</option>
+                        <option value="Campus Traffic Safety & Road Barrier Division">Campus Traffic Safety & Road Barrier Division</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dispatchPriority">Dispatched Urgency</label>
+                    <select id="dispatchPriority" class="form-select">
+                        <option value="Immediate P1 (within 4 hours)">Immediate P1 (within 4 hours)</option>
+                        <option value="Priority P2 (same day)">Priority P2 (same day)</option>
+                        <option value="Routine P3 (scheduled cycle)">Routine P3 (scheduled cycle)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dispatchNotes">Instructions to Estate Team</label>
+                    <textarea id="dispatchNotes" rows="2" class="form-control" placeholder="e.g. Bring cold-mix asphalt, place safety cones near e-rickshaw stop..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" id="cancelDispatchBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Confirm Dispatch</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification System -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- External Libraries -->
+    <!-- Leaflet.js for Interactive OpenStreetMap -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Main Application Script -->
+    <script src="script.js"></script>
+</body>
+</html>
